@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: spark-s3-job
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: spark-container
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/opt/spark/bin/spark-submit"]
+        args:
+          - "--class"
+          - "{{ .Values.spark.mainClass }}"
+          - "--master"
+          - "k8s://https://kubernetes.default.svc"
+          - "--deploy-mode"
+          - "cluster"
+          - "--conf"
+          - "spark.hadoop.fs.s3a.aws.credentials.provider=com.amazonaws.auth.DefaultAWSCredentialsProviderChain"
+          - "local:///opt/spark/jars/SparkS3CSVFilter-assembly-0.1.jar"
+          - "{{ .Values.spark.inputPath }}"
+          - "{{ .Values.spark.outputPath }}"

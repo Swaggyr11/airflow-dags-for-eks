@@ -1,0 +1,9 @@
+image:
+  repository: 891376921217.dkr.ecr.us-east-1.amazonaws.com/spark-app-test
+  tag: latest
+  pullPolicy: Always
+
+spark:
+  mainClass: com.example.Main
+  inputPath: s3a://demo-test-poc-scala/input/students.csv
+  outputPath: s3a://demo-test-poc-scala/output
